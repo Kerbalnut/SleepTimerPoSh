@@ -1437,7 +1437,7 @@ pause
 } # End of Start-SleepTimer function.
 Set-Alias -Name 'Set-SleepTimer' -Value 'Start-SleepTimer'
 #-----------------------------------------------------------------------------------------------------------------------
-Start-SleepTimer -Minutes 1 -Action 'sleep' -WhatIf
+#Start-SleepTimer -Minutes 1 -Action 'sleep' -WhatIf
 #Return
 
 #-----------------------------------------------------------------------------------------------------------------------
