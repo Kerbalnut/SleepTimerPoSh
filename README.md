@@ -9,28 +9,31 @@ Additional options include changing the computer's power state to sleep/hibernat
 Table of Contents:
 
 - [SleepTimerPoSh](#sleeptimerposh)
-	- [Examples](#examples)
+  - [Examples](#examples)
 - [Installing](#installing)
 - [Building](#building)
-	- [Prerequisites for publishing to PowerShell Gallery:](#prerequisites-for-publishing-to-powershell-gallery)
-		- [Install/Update PowerShellGet and PackageManagement](#installupdate-powershellget-and-packagemanagement)
-			- [.NET Framework](#net-framework)
-			- [TLS 1.2](#tls-12)
-			- [PowerShellGet](#powershellget)
-			- [Start new PowerShell session](#start-new-powershell-session)
-			- [Add PowerShell Gallery as a trusted repository](#add-powershell-gallery-as-a-trusted-repository)
-			- [Install Microsoft.PowerShell.PSResourceGet module](#install-microsoftpowershellpsresourceget-module)
-			- [Update all modules](#update-all-modules)
-		- [Install necessary CI/CD modules:](#install-necessary-cicd-modules)
-			- [Invoke Build](#invoke-build)
-			- [PSScriptAnalyzer](#psscriptanalyzer)
-			- [Pester](#pester)
+  - [Prerequisites for publishing to PowerShell Gallery:](#prerequisites-for-publishing-to-powershell-gallery)
+    - [Install/Update PowerShellGet and PackageManagement](#installupdate-powershellget-and-packagemanagement)
+      - [Install .NET Framework (if necessary)](#install-net-framework-if-necessary)
+      - [Enable TLS 1.2 in Profile](#enable-tls-12-in-profile)
+      - [Update PowerShellGet](#update-powershellget)
+      - [Start a new PowerShell session](#start-a-new-powershell-session)
+      - [Add PowerShell Gallery as a trusted repository](#add-powershell-gallery-as-a-trusted-repository)
+      - [Install Microsoft.PowerShell.PSResourceGet module](#install-microsoftpowershellpsresourceget-module)
+      - [Update all modules](#update-all-modules)
+    - [Install necessary CI/CD modules:](#install-necessary-cicd-modules)
+      - [Invoke Build](#invoke-build)
+      - [PSScriptAnalyzer](#psscriptanalyzer)
+      - [Pester](#pester)
 
 
 ## Examples
 
+WIP
+
 # Installing
 
+WIP
 
 # Building
 
@@ -50,11 +53,13 @@ How to check if PowerShell modules **PowerShellGet** and **PackageManagement** v
 Get-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceGet -ListAvailable
 ```
 
+Required Module versions:
+
 | Module Name         | Required Version                 |
 |--------------------:|:---------------------------------|
 | *PowerShellGet*     | any version greater than 1.0.0.1 |
 | *PackageManagement* | any version greater than 1.0.0.1 |
-| *Microsoft.PowerShell.PSResourceGet* | any version |
+| *Microsoft.PowerShell.PSResourceGet* | any version installed |
 
 <details>
     <summary>If a version greater than 1.0.0.1 of both modules is not installed:</summary>
@@ -74,7 +79,7 @@ $PSVersionTable.PSVersion
 - PowerShellGet requires **.NET Framework 4.5** or above.
 - To access the PowerShell Gallery, you must use **Transport Layer Security (TLS) 1.2** or higher. 
 
-#### .NET Framework
+#### Install .NET Framework (if necessary)
 
 How to check if .NET Framework is installed:
 
@@ -130,7 +135,7 @@ All .NET Framework versions since .NET Framework 4 are in-place updates, so only
 
 ---
 
-#### TLS 1.2
+#### Enable TLS 1.2 in Profile
 
 To access the PowerShell Gallery, you must use Transport Layer Security (TLS) 1.2 or higher. 
 
@@ -176,40 +181,40 @@ If (!(Test-Path -Path $PoShProfile)) {
 }
 ```
 
-Check that the TLS 1.2 code snippet is not already added:
+Check if the TLS 1.2 code snippet is already added to your Profile:
 
 ```PowerShell
 # Verify by reading file contents and printing to console:
-Write-Host " `n----- $PoShProfile Content: -----" -ForegroundColor Yellow -BackgroundColor Black; Get-Content $PoShProfile; Write-Host "----- End $((Get-Item $PoShProfile).Name) content -----`n" -ForegroundColor Yellow -BackgroundColor Black
+Write-Host " `n----- Showing $PoShProfile Content: -----" -ForegroundColor Yellow -BackgroundColor Black; Get-Content $PoShProfile; Write-Host "----- End $((Get-Item $PoShProfile).Name) content -----`n" -ForegroundColor Yellow -BackgroundColor Black
 ```
 
-Or, inspect in default program:
+Or, inspect it in your default `.ps1`-file editor application:
 
 ```PowerShell
 # Open file with defualt program using Invoke-Item:
 ii $PoShProfile # Invoke-Item $PoShProfile
 ```
 
-How to enable TLS 1.2 in your PowerShell sessions, if necessary (Run As Administrator):
+How to enable TLS 1.2 in your PowerShell sessions (Run As Administrator):
 
 ```PowerShell
 # Include a descriptive comment for the code being added to Profile:
 $TLS12 = @"
-# To access the PowerShell Gallery, you must use Transport Layer Security (TLS) 1.2 or higher. Use the following command to enable TLS 1.2 in your PowerShell session:
+# To access the PowerShell Gallery, you must use Transport Layer Security (TLS) 1.2 or higher. The following command will enable TLS 1.2 in your PowerShell session:
 [Net.ServicePointManager]::SecurityProtocol =
     [Net.ServicePointManager]::SecurityProtocol -bor
     [Net.SecurityProtocolType]::Tls12
-Write-Host "TLS v1.2 loaded for PowerShell Gallery"
+Write-Host "TLS v1.2 loaded for PowerShell Gallery compatibility" -ForegroundColor Blue -BackgroundColor White
 "@
 
-# Add padding to string
+# Add padding to string:
 $TLS12 = "`n`n$TLS12`n`n"
 
-# Add code snippet to file
+# Add code snippet to file:
 Add-Content -Path $PoShProfile -Value $TLS12
 
-# Verify by reading file contents back
-Write-Host " `n----- $PoShProfile Content: -----" -ForegroundColor Yellow -BackgroundColor Black; Get-Content $PoShProfile; Write-Host "----- End $((Get-Item $PoShProfile).Name) content -----`n" -ForegroundColor Yellow -BackgroundColor Black
+# Verify the change by reading file contents back:
+Write-Host " `n----- Showing $PoShProfile Content: -----" -ForegroundColor Yellow -BackgroundColor Black; Get-Content $PoShProfile; Write-Host "----- End $((Get-Item $PoShProfile).Name) content -----`n" -ForegroundColor Yellow -BackgroundColor Black
 ```
 
 To view the file in your default editor:
@@ -219,7 +224,7 @@ To view the file in your default editor:
 ii $PoShProfile # Invoke-Item $PoShProfile
 ```
 
-#### PowerShellGet
+#### Update PowerShellGet
 
 To update the preinstalled module (that comes with v5.1) you must use `Install-Module`. After you have installed the new version from the PowerShell Gallery, you can use `Update-Module` to install newer releases.
 
@@ -235,7 +240,7 @@ Install-PackageProvider -Name NuGet -Force
 Install-Module PowerShellGet -AllowClobber -Force
 ```
 
-#### Start new PowerShell session
+#### Start a new PowerShell session
 
 After you have installed the new version of PowerShellGet, you should open a new PowerShell session. PowerShell automatically loads the newest version of the module when you use a PowerShellGet cmdlet.
 
@@ -278,10 +283,17 @@ Get-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceGet 
 
 #### Update all modules
 
-How to update all modules
+How-to update all modules:
 
 ```PowerShell
 Update-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceGet
+```
+
+Update help text:
+
+```PowerShell
+Update-Help -Module PowerShellGet, PackageManagement -Force
+Update-Help -Module Microsoft.PowerShell.PSResourceGet -Force
 ```
 
 ---
@@ -303,29 +315,44 @@ Update-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceG
 
 [A sample CI/CD pipeline for PowerShell module](https://andrewmatveychuk.com/a-sample-ci-cd-pipeline-for-powershell-module/)
 
-| Module Name  | Purpose  |
-|-------------:|:---------|
+[PowerShell: Automatic Module Semantic Versioning](https://powershellexplained.com/2017-10-14-Powershell-module-semantic-version/)
+
+| Module Name                                | Purpose  |
+|-------------------------------------------:|:---------|
 | [InvokeBuild](https://github.com/nightroman/Invoke-Build) | Build automation |
 | [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) | Linter/Syntax checker |
 | [Pester](https://github.com/pester/Pester) | Tests |
 | [PSDepend](https://github.com/RamblingCookieMonster/PSDepend) | Dependency management |
+| [BuildHelpers](https://github.com/RamblingCookieMonster/BuildHelpers) | Increment version number |
 
 How to check if these modules are installed:
 
 ```PowerShell
-Get-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend -ListAvailable
+Get-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers -ListAvailable
 ```
 
-How to install the modules:
+How to install the modules if they are not present:
 
 ```PowerShell
-Install-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend -Force
+Install-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers -Force
+```
+
+Import modules if they already are present on the system:
+
+```PowerShell
+Import-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers -Force
+```
+
+Show all the commands from a specific module:
+
+```PowerShell
+Get-Command -Module BuildHelpers
 ```
 
 How to update the modules:
 
 ```PowerShell
-Update-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend
+Update-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers
 ```
 
 
@@ -334,8 +361,6 @@ Update-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend
     <summary><h1>Work In Progress</h1></summary>
 
 ---
-
-
 
 
 #### Invoke Build

@@ -1,10 +1,11 @@
+
 BeforeAll {
     $here = Split-Path -Parent $PSCommandPath
     $sut = (Split-Path -Leaf $PSCommandPath) -replace '\.Tests\.', '.'
     . "$here\$sut"
 }
 
-Describe "'Format-ShortTimeString' Function Functional Tests" {
+Describe "'New-Shortcut' Function Functional Tests" {
 
     Context "Accepting input data" {
         BeforeAll {
@@ -15,12 +16,12 @@ Describe "'Format-ShortTimeString' Function Functional Tests" {
 
         #region Act&Assert
         It "should accept input from the parameter" {
-            $guids = Format-ShortTimeString -Number $inputData
+            $guids = New-Shortcut -Number $inputData
             $guids | Should -HaveCount $inputData
         }
 
         It "should accept input from the pipeline" {
-            $guids = $inputData | Format-ShortTimeString
+            $guids = $inputData | New-Shortcut
             $guids | Should -HaveCount $inputData
         }
         #endregion

@@ -3,9 +3,9 @@
 Function Start-SleepTimer {
 	<#
 	.SYNOPSIS
-	Starts a countdown timer that puts the computer to sleep
+	Starts a countdown timer that puts the computer to sleep.
 	.DESCRIPTION
-	Puts the computer to sleep or hibernates after a set amount of time. Defaults to hour and minute value selection.
+	Puts the computer to sleep/hibernate/shutdown/reboot/lock state after a set amount of time. Defaults to hour and minute value selection.
 	.PARAMETER TimerDuration
 	Takes [TimeSpan] type input values. For example, like the output given by `New-TimeSpan` command.
 	By default this function uses: (New-TimeSpan -Hours 2 -Minutes 30)
