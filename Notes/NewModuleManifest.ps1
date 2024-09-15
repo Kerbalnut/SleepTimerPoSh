@@ -8,7 +8,8 @@
 param (
 	[Parameter()]
 	[String]
-	$ModulePath = "$env:USERPROFILE\Documents\GitHub\SleepTimerPoSh\Examples\TestModuleManifest\MyTest.psd1",
+	#$ModulePath = "$env:USERPROFILE\Documents\GitHub\SleepTimerPoSh\Examples\TestModuleManifest\MyTest.psd1",
+	$ModulePath = "$env:USERPROFILE\Documents\GitHub\SleepTimerPoSh\SleepTimer\SleepTimer.psd1",
 	
 	[String]$AuthorName = "Kerbalnut",
 	
@@ -24,11 +25,15 @@ param (
 	
 )
 
-$Description = "Hello World."
+$Description = "The SleepTimer module contains functions for a countdown timer that will put your computer to sleep/locked/restart/shutdown/hibernate state after a set time. It may also include little unrelated helper functions for testing and experimentation. See `Get-Command -Module SleepTimer` for all functions in this module."
+
+$ReleaseNotes = "Test/Experimental release of SleepTimer module."
 
 Get-Location | Out-Host
+Write-Host $ModulePath
 
 <#
+
 New-ModuleManifest `
 -Path $ModulePath `
 -AliasesToExport '' `
@@ -79,6 +84,7 @@ New-ModuleManifest `
 #-RootModule <System.String>`
 #-WhatIf`
 #<CommonParameters>
+
 #>
 
 
@@ -87,14 +93,13 @@ New-ModuleManifest `
 -AliasesToExport '' `
 -Author $AuthorName `
 -CmdletsToExport '' `
--CompatiblePSEditions 'Desktop' `
 -Description $Description `
 -FileList '' `
 -FunctionsToExport '' `
 -LicenseUri $LicenseURI `
 -PowerShellVersion 2.0 `
 -ProjectUri $ProjectUri `
--ReleaseNotes "Initial module creation." `
+-ReleaseNotes $ReleaseNotes `
 -Tags $Tags 
 
 
