@@ -5,20 +5,16 @@ Function Watch-WhenInternet {
 	.SYNOPSIS
 	Watch and wait for a notification when the internet's back up.
 	.DESCRIPTION
+	Will continuously ping several IP addresses such as 8.8.8.8, 8.8.4.4, 1.1.1.1, etc. until canceled or the internet connection is restored.
+	.PARAMETER TestDowntime
+	For testing purposes only.
 	.NOTES
 	#>
-	#Requires -Version 3
+	#Requires -Version 4
 	[CmdletBinding(DefaultParameterSetName = 'None')]
 	Param(
-		[Parameter(Mandatory = $True, Position = 0, 
-		           ValueFromPipeline = $True, 
-		           ValueFromPipelineByPropertyName = $True, 
-		           HelpMessage = "Path to ...", 
-		           ParameterSetName = "Path")]
-		[ValidateNotNullOrEmpty()]
-		[Alias('ProjectPath','p')]
-		[String]$Path
-		
+		[Parameter(DontShow)]
+		[timespan]$TestDowntime
 	)
 	
 	begin {
@@ -40,39 +36,12 @@ Function Watch-WhenInternet {
 		#$FunctionContent = $MyInvocation.MyCommand.Definition
 		$FunctionName = $MyInvocation.MyCommand.Name
 		#$FunctionName = $MyInvocation.MyCommand
-		Write-Verbose -Message "[$FunctionName]: Starting function `"$FunctionPath`""
+		Write-Verbose -Message "[$FunctionName]: Starting function '$FunctionName' `"$FunctionPath`""
 		#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		Write-Verbose -Message "[$FunctionName]: Executing Begin block"
 		Write-Verbose -Message "[$FunctionName]: Set up params"
 		
 		$StartTime = Get-Date
-		
-		#[DateTime]$DateTime = (Get-Date) + [TimeSpan](New-TimeSpan -Minutes 1)
-		#[DateTime]$DateTime = (Get-Date) + [TimeSpan](New-TimeSpan -Minutes 5)
-		#[DateTime]$DateTime = (Get-Date) + [TimeSpan](New-TimeSpan -Hours 2 -Minutes 30)
-		
-		#
-		# First test if connection is active:
-		If ( (Test-NetConnection 8.8.8.8).PingSucceeded ) {
-			"Yes"
-			$IntenetConn = $True
-		} Else {
-			# "No"
-			If ( (Test-NetConnection 8.8.4.4).PingSucceeded ) {
-				"Yes"
-				$IntenetConn = $True
-			} Else {
-				# "No"
-				If ( (Test-NetConnection 1.1.1.1).PingSucceeded ) {
-					"Yes"
-					$IntenetConn = $True
-				} Else {
-					"No connection"
-					$IntenetConn = $False
-				} # End / If ( (Test-NetConnection 1.1.1.1).PingSucceeded ) 
-			} # End / If ( (Test-NetConnection 8.8.4.4).PingSucceeded ) 
-		} # End / If ( (Test-NetConnection 8.8.8.8).PingSucceeded ) 
-		#>
 		
 		Write-Verbose "[$FunctionName]: End of Begin block."
 	} # End of Begin block
@@ -81,52 +50,119 @@ Function Watch-WhenInternet {
 		Write-Verbose -Message "[$FunctionName]: Executing Process block"
 		#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		
-		If ($IntenetConn -eq $False) {
-			$NoConnection = $True
-			Write-Host "No internet connection detected. Pinging IP addresses:"
-			while ($NoConnection) {
-				
-				If ( (Test-NetConnection 8.8.8.8).PingSucceeded ) {
+		$NoConnection = $True
+		while ($NoConnection) {
+			
+			If ( (Test-NetConnection 8.8.8.8).PingSucceeded ) {
+				#"Yes"
+				$NoConnection = $False
+				Break
+			} Else {
+				#"No"
+				$NoConnection = $True
+				If ( (Test-NetConnection 8.8.4.4).PingSucceeded ) {
 					#"Yes"
 					$NoConnection = $False
+					Break
 				} Else {
 					#"No"
 					$NoConnection = $True
-					If ( (Test-NetConnection 8.8.4.4).PingSucceeded ) {
+					If ( (Test-NetConnection 1.1.1.1).PingSucceeded ) {
 						#"Yes"
 						$NoConnection = $False
+						Break
 					} Else {
 						#"No"
 						$NoConnection = $True
-						If ( (Test-NetConnection 1.1.1.1).PingSucceeded ) {
-							#"Yes"
-							$NoConnection = $False
-						} Else {
-							#"No"
-							$NoConnection = $True
-						} # / If ( (Test-NetConnection 1.1.1.1).PingSucceeded ) 
-					} # / If ( (Test-NetConnection 8.8.4.4).PingSucceeded ) 
-				} # / If ( (Test-NetConnection 8.8.8.8).PingSucceeded ) 
-			} # / while ($NoConnection) 
-			
-			Write-Host "End of loop!"
-			
-		} # / If ($IntenetConn -eq $False) 
+					} # / If ( (Test-NetConnection 1.1.1.1).PingSucceeded ) 
+				} # / If ( (Test-NetConnection 8.8.4.4).PingSucceeded ) 
+			} # / If ( (Test-NetConnection 8.8.8.8).PingSucceeded ) 
+		} # / while ($NoConnection) 
 		
+		Write-Verbose -Message "[$FunctionName]: End of loop!"
 		
 		#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		Write-Verbose -Message "[$FunctionName]: Completed Process block"
 	} # End of Process block
+	
 	End {
 		Write-Verbose -Message "[$FunctionName]: Executing End block"
 		#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		
+		# Display connection restored message:
+		
+		$EndTime = Get-Date
+		
+		If (($TestDowntime)) { # -or $null -ne $TestDowntime -or $TestDowntime -ne ""
+			Write-Verbose -Message "[$FunctionName]: TEST MODE: Using provided downtime `$TestDowntime"
+			[timespan]$Downtime = $TestDowntime
+		} Else {
+			Write-Verbose -Message "[$FunctionName]: Calculating downtime: (Get-Date) - `$StartTime"
+			[timespan]$Downtime = (Get-Date) - $StartTime
+		}
+		
+		Write-Host "'                                                      '" -ForegroundColor Black -BackgroundColor Yellow
+		Write-Host "'  ---------- INTERNET CONNECTION RESTORED ----------  '" -ForegroundColor Black -BackgroundColor Yellow
+		Write-Host "'                                                      '" -ForegroundColor Black -BackgroundColor Yellow
+		
+		#Write-Host "'    Tracking started: 11/21/2024 10:41:41 PM       '" -ForegroundColor Black -BackgroundColor Yellow
+		$StartTimeString = Get-Date -Date $StartTime -Format G
+		$WriteString = "'    Tracking started: $StartTimeString"
+		$WriteString = $WriteString.PadRight(55) + "'"
+		Write-Host -Object $WriteString -ForegroundColor Black -BackgroundColor Yellow
+		
+		Write-Host "'                                                      '" -ForegroundColor Black -BackgroundColor Yellow
+		
+		$DowntimeStr = ""
+		If ($Downtime.TotalDays -ge 1) {
+			$DowntimeStr = $DowntimeStr + ($Downtime.Days) + " day(s) "
+		}
+		If ($Downtime.TotalDays -ge 1 -or $Downtime.TotalHours -ge 1) {
+			$DowntimeStr = $DowntimeStr + ($Downtime.Hours) + " hour(s) "
+		}
+		$DowntimeStr = $DowntimeStr + ($Downtime.Minutes) + " min(s) " + ($Downtime.Seconds) + "sec"
+		$WriteString = "' Downtime tracked: $DowntimeStr"
+		$WriteString = $WriteString.PadRight(55) + "'"
+		Write-Host -Object $WriteString -ForegroundColor Black -BackgroundColor Yellow
+		
+		Write-Host "'                                                      '" -ForegroundColor Black -BackgroundColor Yellow
+		
+		$EndTimeString = Get-Date -Date $EndTime -Format G
+		$WriteString = "' Connection restored: $EndTimeString"
+		$WriteString = $WriteString.PadRight(55) + "'"
+		Write-Host -Object $WriteString -ForegroundColor Black -BackgroundColor Yellow
+		
+		Write-Host "'                                                      '" -ForegroundColor Black -BackgroundColor Yellow
+		Write-Host "'  ---------- INTERNET CONNECTION RESTORED ----------  '" -ForegroundColor Black -BackgroundColor Yellow
+		Write-Host "'                                                      '" -ForegroundColor Black -BackgroundColor Yellow
+		
+		# Play notification sound:
+		
+		If ($PlayJingle -eq 1) {
+			Start-SoundToneAlarmJingle 3 500 @CommonParameters
+		} ElseIf ($PlayJingle -eq 2) {
+			Start-SoundToneAlarmJingle 4 200 2 @CommonParameters
+		} ElseIf ($PlayJingle -eq 'all') {
+			Start-SoundToneAlarmJingle 3 500 @CommonParameters
+			Start-SoundToneAlarmJingle 4 200 2 @CommonParameters
+		} ElseIf (($PlayJingle) -or $null -ne $PlayJingle -or $PlayJingle -ne "") {
+			Write-Warning "-PlayJingle parameter supplied but input not recognized. Input should be integer 1-2 or 'all'."
+			Start-SoundToneAlarmJingle 4 200 2 @CommonParameters
+		} ElseIf ($PlayJingle -eq 'off') {
+			Write-Verbose -Message "[$FunctionName]: Jingle sound skipped."
+		} Else {
+			Start-SoundToneAlarmJingle 3 500 @CommonParameters
+		}
+		
+		# Open website URL:
+		
+		$OpenUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 		
 		
+		If ($OpenWebpageWhenInternter) {
+			Start-Process $OpenUrl
+		}
 		
-		Write-Host "                                                      " -ForegroundColor Black -BackgroundColor Green
-		Write-Host "             INTERNET CONNECTION RESTORED             " -ForegroundColor Black -BackgroundColor Green
-		Write-Host "                                                      " -ForegroundColor Black -BackgroundColor Green
 		
 		Write-Verbose -Message "[$FunctionName]: Ending function"
 		Return

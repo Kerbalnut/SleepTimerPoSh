@@ -6,6 +6,15 @@ function Start-SoundToneAlarmJingle {
 	Plays a sequence of tones.
 	.DESCRIPTION
 	Uses console beep commands to create a tone sequence jingle for an alarm or audio notification.
+	.PARAMETER Repeat
+	How many times to repeat the sound/sequence of tones.
+	.PARAMETER Pause
+	Time in milliseconds to pause between multiple alarm sounds repeating.
+	.PARAMETER Jingle
+	Use and integer to choose which type of sound to play.
+	
+	1 - Alarm Jingle
+	2 - Sunshine of your Love
 	.EXAMPLE
 	Start-SoundToneAlarmJingle -Verbose
 	
@@ -31,7 +40,7 @@ function Start-SoundToneAlarmJingle {
 		
 		# The pause in milliseconds to take between sequences when playing multiple
 		[Parameter(Position = 2, Mandatory = $False)]
-		[int]$Pause = 1000,
+		[int]$Pause = 500,
 		
 		# Chooses which jingle to play.
 		[Parameter(Position = 3, Mandatory = $False)]

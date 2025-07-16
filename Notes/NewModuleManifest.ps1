@@ -1,6 +1,7 @@
 
 <#
 .SYNOPSIS
+Script for the New-ModuleManifest command to create a new .psd1 file.
 .DESCRIPTION
 .NOTES
 #>
@@ -11,7 +12,13 @@ param (
 	#$ModulePath = "$env:USERPROFILE\Documents\GitHub\SleepTimerPoSh\Examples\TestModuleManifest\MyTest.psd1",
 	$ModulePath = "$env:USERPROFILE\Documents\GitHub\SleepTimerPoSh\SleepTimer\SleepTimer.psd1",
 	
+	# MyModule.psm1 as a RootModule inside module manifest.
+	$RootModule = "$env:USERPROFILE\Documents\GitHub\SleepTimerPoSh\SleepTimer\SleepTimer.psm1",
+	
 	[String]$AuthorName = "Kerbalnut",
+	[String]$CompanyName = "Kerbalnut",
+	
+	[version]$ModuleVersion = 1.0,
 	
 	[guid]$Guid,
 	# Specifies a unique identifier for the module. The GUID can be used to distinguish among modules with the same name.
@@ -21,13 +28,15 @@ param (
 	[uri]$ProjectUri = "https://github.com/Kerbalnut/SleepTimerPoSh",
 	[uri]$LicenseURI = "https://github.com/Kerbalnut/SleepTimerPoSh/blob/main/LICENSE",
 	
-	[String[]]$Tags = @("PowerShell","Desktop","Timer","Sleep")
+	[String[]]$Tags = @("PowerShell","Desktop","Timer","Sleep"),
+	
+	$Description = "The SleepTimer module contains functions for a countdown timer that will put your computer to sleep/locked/restart/shutdown/hibernate state after a set time. It may also include little unrelated helper functions for testing and experimentation. See `Get-Command -Module SleepTimer` for all functions in this module.",
+	
+	$ReleaseNotes = "Test/Experimental release of SleepTimer module."
 	
 )
 
-$Description = "The SleepTimer module contains functions for a countdown timer that will put your computer to sleep/locked/restart/shutdown/hibernate state after a set time. It may also include little unrelated helper functions for testing and experimentation. See `Get-Command -Module SleepTimer` for all functions in this module."
-
-$ReleaseNotes = "Test/Experimental release of SleepTimer module."
+[version]$PowerShellVersion = 2.0
 
 Get-Location | Out-Host
 Write-Host $ModulePath
@@ -93,14 +102,91 @@ New-ModuleManifest `
 -AliasesToExport '' `
 -Author $AuthorName `
 -CmdletsToExport '' `
+-CompanyName $CompanyName `
 -Description $Description `
 -FileList '' `
 -FunctionsToExport '' `
 -LicenseUri $LicenseURI `
--PowerShellVersion 2.0 `
+-PowerShellVersion $PowerShellVersion `
 -ProjectUri $ProjectUri `
 -ReleaseNotes $ReleaseNotes `
--Tags $Tags 
+-Tags $Tags `
+-RootModule $RootModule `
+
+
+
+
+
+
+# End of script
+
+
+
+
+
+
+
+
+Get-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceGet -ListAvailable
+
+
+$a = Get-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceGet -ListAvailable
+
+
+$a | Where-Object -Property 'Name' -eq 'PowerShellGet' 
+
+$b = $a | Where-Object -Property 'Name' -eq 'PowerShellGet'
+
+
+If ($b.Version -gt 1.0.0.1) {Write-Host "$($b.Version) is greater!"} else {Write-Host "$($b.Version) is lesser..."}
+
+
+
+foreach ($Module in $b) {
+	If ([version]$Module.Version -gt [version]'1.0.0.1') {
+		Write-Host "Installed version $($Module.Version) is greater than 1.0.0.1"
+	} Else {
+		Write-Host "Installed version $($Module.Version) is NOT greater than 1.0.0.1"
+	}
+}
+
+
+$NewerVersionInstalled = $False
+foreach ($Module in $b) {
+	If ([version]$Module.Version -gt [version]'1.0.0.1') {
+		Write-Host "Installed version $($Module.Version) is greater than 1.0.0.1"
+		$NewerVersionInstalled = $True
+	} Else {
+		Write-Host "Installed version $($Module.Version) is NOT greater than 1.0.0.1"
+	}
+}
+If ($NewerVersionInstalled) {
+	Write-Host "A newer version is already installed, Update-Module can be used"
+} Else {
+	Write-Host "1.0.0.1 or lower is installed, to upgrade to a newer version Install-Module must be used."
+}
+
+
+...
+
+Get-Module PowerShellGet, PackageManagement, Microsoft.PowerShell.PSResourceGet -ListAvailable
+
+$PowerShellGetModules = Get-Module PowerShellGet -ListAvailable
+
+$NewerVersionInstalled = $False
+foreach ($Module in $PowerShellGetModules) {
+	If ([version]$Module.Version -gt [version]'1.0.0.1') {
+		Write-Host "Installed version $($Module.Version) is greater than 1.0.0.1"
+		$NewerVersionInstalled = $True
+	} Else {
+		Write-Host "Installed version $($Module.Version) is NOT greater than 1.0.0.1"
+	}
+}
+If ($NewerVersionInstalled) {
+	Write-Host "A newer version is already installed, Update-Module can be used"
+} Else {
+	Write-Host "1.0.0.1 or lower is installed, to upgrade to a newer version Install-Module must be used."
+}
 
 
 

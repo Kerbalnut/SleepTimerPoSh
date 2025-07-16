@@ -1,4 +1,3 @@
-
 Set-StrictMode -Version Latest
 
 # Get public and private function definition files

@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../PowerShell-template/04 Module Template/ModuleTemplate"
+		}
+	],
+	"settings": {}
+}
