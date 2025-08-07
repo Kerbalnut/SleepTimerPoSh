@@ -1,4 +1,4 @@
-# WIP
+# Work In Progress
 
 # SleepTimerPoSh
 
@@ -10,25 +10,22 @@ Additional options include changing the computer's power state to sleep/hibernat
 
 Table of Contents:
 
-- [WIP](#wip)
+- [Work In Progress](#work-in-progress)
 - [SleepTimerPoSh](#sleeptimerposh)
 - [Examples](#examples)
 - [Installing](#installing)
 - [Updating](#updating)
 - [Building](#building)
-  - [Prerequisites for publishing to PowerShell Gallery:](#prerequisites-for-publishing-to-powershell-gallery)
-    - [Install/Update PowerShellGet and PackageManagement](#installupdate-powershellget-and-packagemanagement)
-      - [Installing .NET Framework 4.5 (if necessary)](#installing-net-framework-45-if-necessary)
-      - [Enable TLS 1.2 in Profile](#enable-tls-12-in-profile)
-      - [Update PowerShellGet](#update-powershellget)
-      - [Start a new PowerShell session](#start-a-new-powershell-session)
-      - [Add PowerShell Gallery as a trusted repository](#add-powershell-gallery-as-a-trusted-repository)
-      - [Install Microsoft.PowerShell.PSResourceGet module](#install-microsoftpowershellpsresourceget-module)
-      - [Update all modules](#update-all-modules)
-    - [Install necessary CI/CD modules:](#install-necessary-cicd-modules)
-      - [Invoke Build](#invoke-build)
-      - [PSScriptAnalyzer](#psscriptanalyzer)
-      - [Pester](#pester)
+	- [Prerequisites for publishing to PowerShell Gallery:](#prerequisites-for-publishing-to-powershell-gallery)
+		- [Install/Update PowerShellGet and PackageManagement](#installupdate-powershellget-and-packagemanagement)
+			- [Installing .NET Framework 4.5 (if necessary)](#installing-net-framework-45-if-necessary)
+			- [Enable TLS 1.2 in Profile](#enable-tls-12-in-profile)
+			- [Update PowerShellGet](#update-powershellget)
+			- [Start a new PowerShell session](#start-a-new-powershell-session)
+			- [Add PowerShell Gallery as a trusted repository](#add-powershell-gallery-as-a-trusted-repository)
+			- [Install Microsoft.PowerShell.PSResourceGet module](#install-microsoftpowershellpsresourceget-module)
+			- [Update all modules](#update-all-modules)
+		- [Install necessary CI/CD modules:](#install-necessary-cicd-modules)
 
 
 # Examples
@@ -506,16 +503,16 @@ function Test-MyPsMods {
 Test-MyPsMods
 ```
 
-How to install the modules if they are not present:
-
-```PowerShell
-Install-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers -Force
-```
-
 Import modules if they already are present on the system:
 
 ```PowerShell
 Import-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers -Force
+```
+
+How to install the modules if they are not present:
+
+```PowerShell
+Install-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers -Force
 ```
 
 Show all the commands from a specific module:
@@ -530,98 +527,10 @@ How to update the modules:
 Update-Module InvokeBuild, PSScriptAnalyzer, Pester, PSDepend, BuildHelpers
 ```
 
-
-
 <details>
-    <summary><h1>Work In Progress</h1></summary>
+    <summary><h4>Work In Progress</h4></summary>
 
 ---
-
-
-#### Invoke Build
-
-[Invoke-Build](https://github.com/nightroman/Invoke-Build) is a build and test automation tool.
-
-To check if installed:
-
-```PowerShell
-Get-Module InvokeBuild -ListAvailable
-```
-
-Get current package information:
-
-```PowerShell
-Find-Module -Name InvokeBuild -Repository PSGallery | Get-Member
-
-(Find-Module -Name InvokeBuild -Repository PSGallery).Version
-```
-
-<details>
-    <summary>Update/Install <b>InvokeBuild</b> module:</summary>
-
----
-
-To update, Run as Administrator from elevated PowerShell terminal:
-
-```PowerShell
-Update-Module InvokeBuild
-```
-
-To Install, Run as Administrator from elevated PowerShell terminal:
-
-```PowerShell
-Install-Module InvokeBuild
-```
-
-Or:
-
-```PowerShell
-choco install invoke-build
-```
-
-NOTE: The [Chocolatey package](https://community.chocolatey.org/packages/invoke-build) is maintained by its owner.
-
----
-
-<!-- &#11206;. -->
-&#11205;
-
----
-
-</details>
-
----
-
-#### PSScriptAnalyzer
-
-[PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) is a build and test automation tool.
-
-```PowerShell
-Install-Module -Name PSScriptAnalyzer -Force
-```
-
-#### Pester
-
-[Pester](https://github.com/pester/Pester) runs on Windows, Linux, MacOS and anywhere else thanks to PowerShell. It is compatible with Windows PowerShell 5.1 and PowerShell 7.2 and newer.
-
-Pester 3 comes pre-installed with Windows 10, but we recommend updating, by running this PowerShell command As Administrator:
-
-```PowerShell
-Install-Module -Name Pester -Force
-```
-
-
-
-
-
-
-
-<details>
-    <summary>If version greater than 1.0.0.1 of <b>PSResourceGet</b> module is not installed:</summary>
-
----
-
-Content
 
 ---
 
@@ -635,16 +544,5 @@ Content
 ---
 
 
-
-
----
-
-<!-- &#11206;. -->
-&#11205;
-
----
-
-</details>
-
----
+<h1>Work In Progress</h1>
 
